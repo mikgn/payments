@@ -1,0 +1,108 @@
+require:
+  # - rubocop-performance
+
+AllCops:
+  TargetRubyVersion: 3.1.2
+  SuggestExtensions: false
+  NewCops: enable
+  Exclude:
+    - 'db/**/*'
+    - 'bin/**/*'
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'config.ru'
+    - 'config/**/*'
+    - 'tmp/**/*'
+    - 'spec/spec_helper.rb'
+    - 'spec/rails_helper.rb'
+
+Layout/LineLength:
+  Max: 100
+  Exclude:
+    - 'Gemfile'
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Lint/EmptyClass:
+  Enabled: false
+
+Lint/MissingSuper:
+  Exclude:
+    - 'spec/**/*'
+
+Lint/SuppressedException:
+  AllowComments: true
+
+Metrics/AbcSize:
+  Enabled: false
+
+GlobalVars:
+  AllowedVariables:
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'Gemfile'
+
+Metrics/ClassLength:
+  Description: 'Avoid classes longer than 150 lines of code.'
+  Max: 100
+  Enabled: true
+
+Metrics/ModuleLength:
+  Description: 'Avoid modules longer than 100 lines of code.'
+  Max: 100
+  Enabled: true
+
+Metrics/MethodLength:
+  Max: 20
+  Enabled: true
+
+Metrics/ParameterLists:
+  Description: 'Pass no more than four parameters into a method.'
+  Max: 4
+  Enabled: true
+
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
+Naming/FileName:
+  Enabled: true
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FormatStringToken:
+  EnforcedStyle: unannotated
+
+Style/HashAsLastArrayItem:
+  EnforcedStyle: no_braces
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: either
+
+Style/MissingRespondToMissing:
+  Exclude:
+    - 'spec/**/*'
+
+Style/PercentLiteralDelimiters:
+  Enabled: false
+
+Style/StructInheritance:
+  Enabled: false
+
+Style/RedundantFetchBlock:
+  Enabled: false
