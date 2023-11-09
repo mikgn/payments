@@ -21,6 +21,7 @@ module UsersImporter
         User.create!(
           name: params[:name],
           email: params[:email],
+          password: params[:password],
           status: params[:status],
           description: params[:description],
           role: params[:role]
@@ -30,6 +31,6 @@ module UsersImporter
       end
     end
 
-    puts "#{i} Users have been imported"
+    puts "=== #{i} Users have been imported ==="
   end
 end

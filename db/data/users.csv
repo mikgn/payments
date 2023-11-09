@@ -1,5 +1,5 @@
-﻿name,email,status,description,role
-Merchant1,merchant1@example.com,inactive,Merchant1,Merchant
-Merchant2,merchant2@example.com,inactive,Merchant2,Merchant
-Merchant3,merchant3@example.com,inactive,Merchant3,Merchant
-Admin1,admin1@example.com,active,Admin1,Admin
+﻿name,email,password,status,description,role,password
+Merchant1,merchant1@example.com,Merchantpass1,inactive,Merchant1,Merchant
+Merchant2,merchant2@example.com,Merchantpass2,inactive,Merchant2,Merchant
+Merchant3,merchant3@example.com,Merchantpass3,inactive,Merchant3,Merchant
+Admin1,admin1@example.com,Adminpass1,active,Admin1,Admin

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  has_secure_password
+
   self.inheritance_column = 'role'
 
   EMAIL_FORMAT = /\A[^@\s]+@([^@.\s]+\.)+[^@.\s]+\z/
@@ -16,6 +18,8 @@ class User < ApplicationRecord
   validates :email, presence: true,
                     uniqueness: true,
                     format: { with: EMAIL_FORMAT }
+  validates :password, length: { minimum: 8 }, allow_nil: true
+
   def admin?
     role == 'Admin'
   end
