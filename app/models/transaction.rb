@@ -10,10 +10,15 @@ class Transaction < ApplicationRecord
 
   belongs_to :user
 
-  validates :amount, presence: true,
-                     numericality: { greater_than: 0 },
-                     unless: -> { type == 'Reversal' }
-  validates :status, presence: true, inclusion: { in: statuses.keys }
-  validates :customer_email, presence: true,
-                             format: { with: User::EMAIL_FORMAT }
+  validates :parent_id, presence: true, allow_nil: true
+  validates :status, presence: true, inclusion: { in: statuses.keys }, allow_nil: true
+  validates :customer_email, presence: true, format: { with: User::EMAIL_FORMAT }
+
+  def cancel!
+    raise NotImplementedError
+  end
+
+  def serializable_hash(options = nil)
+    super.merge(trsnsaction_type: type)
+  end
 end

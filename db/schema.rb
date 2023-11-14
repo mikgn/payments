@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_03_194527) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_08_080100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -18,7 +18,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_03_194527) do
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "type", null: false
     t.integer "amount"
-    t.integer "status", null: false
+    t.integer "status", default: 0, null: false
     t.string "customer_email", null: false
     t.string "customer_phone"
     t.uuid "user_id", null: false
@@ -38,6 +38,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_03_194527) do
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "password_digest"
   end
 
   add_foreign_key "transactions", "users"
