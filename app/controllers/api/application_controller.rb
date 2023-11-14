@@ -20,5 +20,9 @@ module Api
     rescue *ERRORS => e
       render json: { errors: e.message }, status: :unauthorized
     end
+
+    def check_merchant_status
+      render json: { error: 'inactive user' }, status: :unauthorized unless @current_user.active?
+    end
   end
 end
