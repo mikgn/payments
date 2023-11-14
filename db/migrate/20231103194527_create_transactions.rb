@@ -4,7 +4,7 @@ class CreateTransactions < ActiveRecord::Migration[7.0]
       t.string :type, null: false
       t.integer :amount
       t.check_constraint 'amount > 0'
-      t.integer :status, null: false
+      t.integer :status, null: false, default: 0
       t.string :customer_email, null: false
       t.string :customer_phone
       t.references :user, null: false, type: :uuid, foreign_key: true
