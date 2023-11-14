@@ -19,8 +19,4 @@ class User < ApplicationRecord
                     uniqueness: true,
                     format: { with: EMAIL_FORMAT }
   validates :password, length: { minimum: 8 }, allow_nil: true
-
-  def admin?
-    role == 'Admin'
-  end
 end
