@@ -1,8 +1,16 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  root "admin/merchants#index"
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+  scope module: :admin do
+    resources :merchants, only: %i[index show edit update destroy]
+  end
+
+  scope module: :api do
+    resources :transactions, only: %i[index show create]
+
+    post 'auth/login', to: 'authentication#login'
+    get '/*a', to: 'application#not_found'
+  end
 end
