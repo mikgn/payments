@@ -3,8 +3,10 @@
 module Api
   class TransactionsController < Api::ApplicationController
     include ActionController::MimeResponds
+
     before_action :authorize_request
     before_action :check_merchant_status, only: :create
+    before_action :validate_params, only: :create
 
     PERMITTED_PARAMS = %i[type amount customer_email customer_phone parent_id].freeze
 
@@ -12,8 +14,12 @@ module Api
       transactions = @current_user.transactions.group_by(&:customer_email)
 
       respond_to do |format|
-        format.json { render json: transactions }
-        format.xml { render xml: transactions.as_json }
+        format.json do
+          render json: transactions
+        end
+        format.xml do
+          render xml: transactions.as_json
+        end
       end
     end
 
@@ -21,8 +27,12 @@ module Api
       transaction = @current_user.transactions.find(params[:id])
 
       respond_to do |format|
-        format.json { render json: transaction }
-        format.xml { render xml: transaction.as_json }
+        format.json do
+          render json: transaction
+        end
+        format.xml do
+          render xml: transaction.as_json
+        end
       end
     end
 
@@ -31,13 +41,21 @@ module Api
 
       if transaction
         respond_to do |format|
-          format.json { render json: transaction, status: :created }
-          format.xml { render xml: transaction.as_json, status: :created }
+          format.json do
+            render json: transaction, status: :created
+          end
+          format.xml do
+            render xml: transaction.as_json, status: :created
+          end
         end
       else
         respond_to do |format|
-          format.json { render json: transaction.errors, status: :unprocessable_entity }
-          format.xml { render xml: transaction.errors.as_json, status: :unprocessable_entity }
+          format.json do
+            render json: { errors: transaction.errors }, status: :unprocessable_entity
+          end
+          format.xml do
+            render xml: { errors: transaction.errors.as_json }, status: :unprocessable_entity
+          end
         end
       end
     end
@@ -59,9 +77,22 @@ module Api
     end
 
     def fetch_xml_params
-      Hash.from_xml(request.body.read)['root']['transaction']
-          .symbolize_keys
-          .slice(*PERMITTED_PARAMS)
+      Hash.from_xml(request.raw_post)['transaction'].symbolize_keys.slice(*PERMITTED_PARAMS)
+    end
+
+    def validate_params
+      validator = TransactionParamsValidator.new(transaction_params)
+
+      return if validator.valid?
+
+      respond_to do |format|
+        format.json do
+          render json: { errors: validator.errors }, status: :unprocessable_entity
+        end
+        format.xml do
+          render xml: { errors: validator.errors.as_json }, status: :unprocessable_entity
+        end
+      end
     end
   end
 end
