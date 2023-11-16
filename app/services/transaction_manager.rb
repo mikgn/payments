@@ -17,7 +17,7 @@ module TransactionManager
   def call(params)
     new_transaction = params[:type].constantize.new(params)
 
-    if has_parent?(new_transaction)
+    if must_have_parent?(new_transaction)
       process_with_transaction(new_transaction)
     else
       new_transaction.save!
@@ -42,7 +42,7 @@ module TransactionManager
     end
   end
 
-  def has_parent?(transaction)
+  def must_have_parent?(transaction)
     TRANSACTIONS_DEPENDENCIES.keys.include?(transaction.type)
   end
 

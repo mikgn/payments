@@ -15,8 +15,6 @@ class User < ApplicationRecord
   has_many :transactions
 
   validates :status, presence: true, inclusion: { in: statuses.keys }
-  validates :email, presence: true,
-                    uniqueness: true,
-                    format: { with: EMAIL_FORMAT }
+  validates :email, presence: true, uniqueness: true, format: { with: EMAIL_FORMAT }
   validates :password, length: { minimum: 8 }, allow_nil: true
 end
