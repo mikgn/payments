@@ -18,7 +18,7 @@ class Admin::MerchantsController < ApplicationController
     if @merchant.update(merchant_params)
       redirect_to merchant_path(@merchant), notice: 'Merchant was successfully updated'
     else
-      render 'edit'
+      render :edit, status: :unprocessable_entity
     end
   end
 
