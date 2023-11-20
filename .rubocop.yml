@@ -73,6 +73,10 @@ Naming/FileName:
 Naming/MemoizedInstanceVariableName:
   Enabled: false
 
+Style/ClassAndModuleChildren:
+  Exclude:
+    - 'app/controllers/**/**/*'
+
 Style/Documentation:
   Enabled: false
 
