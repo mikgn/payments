@@ -4,12 +4,13 @@ class Admin::MerchantsController < ApplicationController
   before_action :set_merchant, only: %i[show edit update destroy]
 
   def index
-    @merchants = Merchant.all
+    @merchants = Merchant.all.sort
   end
 
   def show
-    @merchant_transactions = @merchant.transactions.group_by(&:customer_email)
-    @merchant_transactions_sum = @merchant.total_transaction_sum
+    merchant_transactions = @merchant.transactions
+    @merchant_transactions_sum = calculate_sum(merchant_transactions)
+    @merchant_transactions = merchant_transactions.group_by(&:customer_email)
   end
 
   def edit; end
@@ -31,10 +32,16 @@ class Admin::MerchantsController < ApplicationController
   private
 
   def set_merchant
-    @merchant = Merchant.find(params[:id])
+    @merchant ||= Merchant.find(params[:id])
   end
 
   def merchant_params
-    params.require(:merchant).permit(:name, :email, :description, :status, :password)
+    params.require(:merchant).permit(
+      :name, :email, :description, :status, :password, :password_confirmation
+    )
+  end
+
+  def calculate_sum(transactions)
+    transactions.select { |t| t.type == 'Charge' && t.status == 'approved' }.sum(&:amount)
   end
 end
