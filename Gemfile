@@ -30,7 +30,7 @@ gem 'stimulus-rails'
 gem 'cssbundling-rails'
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem 'jbuilder'
+# gem 'jbuilder'
 
 # Static code analyzer
 gem 'rubocop', '~> 1.57', require: false
@@ -77,6 +77,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.0.0'
   # Runtime developer console
   gem 'pry-byebug', '~> 3.10', '>= 3.10.1'
+  gem 'factory_bot_rails', '~> 6.2'
 end
 
 group :development do

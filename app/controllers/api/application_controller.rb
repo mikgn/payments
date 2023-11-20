@@ -2,13 +2,15 @@
 
 module Api
   class ApplicationController < ActionController::API
+    rescue_from ActiveRecord::RecordNotFound, with: :not_found
+
     ERRORS = [
       ActiveRecord::RecordNotFound,
       JWT::DecodeError
     ].freeze
 
     def not_found
-      render json: { error: 'not found' }
+      render json: { error: 'not found' }, status: :not_found
     end
 
     def authorize_request
