@@ -54,6 +54,7 @@ RSpec.describe Api::TransactionsController, type: :controller do
       it 'creates authorize transaction with valid params' do
         post :create, params: { transaction: authorize_params }, format: :json
 
+        expect(response.status).to eq(201)
         expect(Authorize.last.slice(:type, :amount, :customer_email, :customer_phone))
           .to eq(authorize_params)
       end
@@ -83,6 +84,7 @@ RSpec.describe Api::TransactionsController, type: :controller do
       it 'creates charge transaction with valid params' do
         post :create, params: { transaction: charge_params }, format: :json
 
+        expect(response.status).to eq(201)
         expect(Charge.last.slice(:type, :amount, :customer_email, :customer_phone, :parent_id))
           .to eq(charge_params)
       end
@@ -112,6 +114,7 @@ RSpec.describe Api::TransactionsController, type: :controller do
       it 'creates Refund transaction and refunds Charge transaction' do
         post :create, params: { transaction: refund_params }, format: :json
 
+        expect(response.status).to eq(201)
         expect(Refund.last.slice(:type, :amount, :customer_email, :customer_phone, :parent_id))
           .to eq(refund_params)
         expect(Charge.last.status)
@@ -143,6 +146,7 @@ RSpec.describe Api::TransactionsController, type: :controller do
       it 'creates Reversal transaction and reverses Authorize transaction' do
         post :create, params: { transaction: reversal_params }, format: :json
 
+        expect(response.status).to eq(201)
         expect(Reversal.last.slice(:type, :customer_email, :customer_phone, :parent_id))
           .to eq(reversal_params)
         expect(Authorize.last.status)
