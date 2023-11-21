@@ -7,4 +7,8 @@ class Merchant < User
     transactions.where(transactions: { type: 'Charge', status: 'approved' })
                 .sum('transactions.amount')
   end
+
+  def total_transactions
+    transactions.size
+  end
 end

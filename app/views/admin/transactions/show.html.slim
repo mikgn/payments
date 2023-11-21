@@ -1,0 +1,41 @@
+.merchant
+  .card[style="width: 60rem;"]
+    .card-body
+      h5.card-title
+        h3 Id: #{@transaction.id} &nbsp; #{link_to 'Transactions', admin_transactions_path, class: "btn btn-primary"}
+      p.card-text
+        b Type:
+        | &nbsp;
+        span #{@transaction.type}
+      p.card-text
+        b Amount:
+        | &nbsp;
+        span #{@transaction.amount}
+      p.card-text
+        b Status:
+        | &nbsp;
+        span #{@transaction.status}
+      p.card-text
+        b Customer Email:
+        | &nbsp;
+        span #{@transaction.customer_email}
+      p.card-text
+        b Customer Phone:
+        | &nbsp;
+        span #{@transaction.customer_phone}
+      p.card-text
+        b Merchant Id:
+        | &nbsp;
+        span #{link_to @transaction.user_id, admin_merchant_path(@transaction.user_id)}
+      p.card-text
+        b Parent Transaction Id:
+        | &nbsp;
+        span  #{@transaction.parent_id}
+      p.card-text
+        b Created At:
+        | &nbsp;
+        span #{@transaction.created_at}
+      p.card-text
+        b Updated At:
+        | &nbsp;
+        span #{@transaction.updated_at}

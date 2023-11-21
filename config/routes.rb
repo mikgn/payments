@@ -3,7 +3,8 @@
 Rails.application.routes.draw do
   root "admin/merchants#index"
 
-  scope module: :admin do
+  namespace :admin do
+    resources :transactions, only: %i[index show]
     resources :merchants, only: %i[index show edit update destroy]
   end
 
