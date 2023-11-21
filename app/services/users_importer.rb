@@ -14,17 +14,15 @@ module UsersImporter
   private
 
   def import_users
-    User.transaction do
-      CSV.foreach(FILE_PATH, headers: true, header_converters: :symbol).each do |params|
-        User.create!(
-          name: params[:name],
-          email: params[:email],
-          password: params[:password],
-          status: params[:status],
-          description: params[:description],
-          role: params[:role]
-        )
-      end
+    CSV.foreach(FILE_PATH, headers: true, header_converters: :symbol).each do |params|
+      User.create!(
+        name: params[:name],
+        email: params[:email],
+        password: params[:password],
+        status: params[:status],
+        description: params[:description],
+        role: params[:role]
+      )
     end
 
     puts "Users have been imported"
