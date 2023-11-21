@@ -1,0 +1,54 @@
+.content-wrapper
+  h1 Transactions #{link_to 'Merchants', admin_merchants_path, class: "btn btn-primary"}
+
+  table.table
+    thead
+      tr
+        th[scope="col"]
+          | Id
+        th[scope="col"]
+          | Type
+        th[scope="col"]
+          | Amount
+        th[scope="col"]
+          | Status
+        th[scope="col"]
+          | Customer Email
+        th[scope="col"]
+          | Customer Phone
+        th[scope="col"]
+          | Merchant Id
+        th[scope="col"]
+          | Parent Transaction Id
+        th[scope="col"]
+          | Created At
+        th[scope="col"]
+          | Updated At
+    tbody
+      - @transactions.each do |transaction|
+        tr
+          td
+            | #{link_to transaction.id, admin_transaction_path(transaction)}
+          td
+            | #{transaction.type}
+          td
+            | #{transaction.amount}
+          td
+            | #{transaction.status}
+          td
+            | #{transaction.customer_email}
+          td
+            | #{transaction.customer_phone}
+          td
+            | #{link_to transaction.user_id, admin_merchant_path(transaction.user_id)}
+          td
+            - if transaction.parent_id.present?
+              | #{link_to transaction.parent_id, admin_transaction_path(transaction.parent_id)}
+            - else
+              |
+
+          td
+            | #{transaction.created_at}
+          td
+            | #{transaction.updated_at}
+
