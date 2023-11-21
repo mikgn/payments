@@ -20,7 +20,7 @@ RSpec.describe Api::AuthenticationController, type: :controller do
         token = JSON.parse(response.body)['token']
 
         expect(response.status).to eq(200)
-        expect(JWT.decode(token, key).first["user_id"]).to eq(merchant.id)
+        expect(JWT.decode(token, key).first['user_id']).to eq(merchant.id)
       end
     end
 
@@ -29,7 +29,7 @@ RSpec.describe Api::AuthenticationController, type: :controller do
         post :login, params: auth_params.merge({ merchant: { password: 'invalid' } })
 
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"error\":\"unauthorized\"}")
+        expect(response.body).to eq({ error: 'unauthorized' }.to_json)
       end
     end
   end
