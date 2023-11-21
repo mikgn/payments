@@ -14,8 +14,6 @@ module UsersImporter
   private
 
   def import_users
-    i = 0
-
     User.transaction do
       CSV.foreach(FILE_PATH, headers: true, header_converters: :symbol).each do |params|
         User.create!(
@@ -26,11 +24,9 @@ module UsersImporter
           description: params[:description],
           role: params[:role]
         )
-
-        i += 1
       end
     end
 
-    puts "=== #{i} Users have been imported ==="
+    puts "Users have been imported"
   end
 end
