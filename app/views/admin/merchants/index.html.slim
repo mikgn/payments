@@ -1,0 +1,17 @@
+.content-wrapper
+  h1 Merchants
+
+  table.table
+    thead
+      tr
+        th[scope="col"]
+          | Name
+        th[scope="col"]
+          | Status
+    tbody
+      - @merchants.each_with_index do |merchant, id|
+        tr
+          td
+            | #{link_to merchant.name, merchant_path(merchant)}
+          td
+            | #{merchant.status}

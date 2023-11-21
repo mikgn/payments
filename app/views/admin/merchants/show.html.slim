@@ -1,0 +1,65 @@
+.merchant
+  #flash-messages
+  - if notice
+    p.alert.alert-success
+      = notice
+  - if alert
+    p.alert.alert-danger
+      = alert
+
+  .card[style="width: 20rem;"]
+    .card-body
+      h5.card-title
+        | #{@merchant.name}
+      p.card-text
+        | Status: #{@merchant.status}
+      p.card-text
+        | Transactions Sum: #{@merchant_transactions_sum}
+      .buttons
+        | &nbsp;
+        = link_to 'all merchants', merchants_path,
+                                   class: "btn btn-primary"
+        | &nbsp;
+        = link_to 'edit', edit_merchant_path(@merchant),
+                          class: "btn btn-secondary"
+
+  .merchant-transaction
+    - @merchant_transactions.each do |email, transactions|
+      p
+      br
+      mark Customer Email:
+      | &nbsp;
+      span = email
+      p
+
+      span Transactions:
+      - transactions.each do |transaction|
+        hr
+        p
+        b Id:
+        | &nbsp;
+        span = transaction.id
+        p
+        b Type:
+        | &nbsp;
+        span = transaction.type
+        p
+        b Amount:
+        | &nbsp;
+        span = transaction.amount
+        p
+        b Status:
+        | &nbsp;
+        span = transaction.status
+        p
+        b Customer Phone:
+        | &nbsp;
+        span = transaction.customer_phone
+        p
+        b Parent Transaction:
+        | &nbsp;
+        span = transaction.parent_id
+        p
+        b Created At:
+        | &nbsp;
+        span = transaction.created_at

@@ -24,9 +24,11 @@ class Admin::MerchantsController < ApplicationController
   end
 
   def destroy
-    @merchant.destroy
-
-    redirect_to root_path, notice: 'Merchant was successfully destroyed'
+    if @merchant.destroy
+      redirect_to root_path, notice: 'Merchant was successfully destroyed'
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   private

@@ -1,0 +1,36 @@
+.container.content-wrapper.content-center.buffer-both.reg-form
+  h1.title-medium.pb-10 #{yield(:title)}
+  .column-4-4
+    = form_for @merchant do |f|
+      - if @merchant.errors.any?
+        .form-errors
+          ul
+            - @merchant.errors.full_messages.each do |message|
+              li.form-error-message #{message}
+      .form-field
+        = f.label :email, 'Email', class: 'form-label required'
+        = f.text_field :email, class: 'form-text-field'
+      .form-field
+        = f.label :name, 'Name', class: 'form-label required'
+        = f.text_field :name, class: 'form-text-field'
+      .form-field
+        = f.label :description, 'Description', class: 'form-label required'
+        = f.text_field :description, class: 'form-text-field'
+      .form-field
+        = f.label :status, 'Status', class: 'form-label required'
+        = f.select :status, User.statuses.keys, class: 'form-check-input'
+      .form-field.password-message
+        = yield(:leave_password_title)
+      .form-field
+        = f.label :password, 'Password', class: 'form-label required'
+        = f.password_field :password, class: 'form-text-field'
+      .form-field
+        = f.label :password_confirmation, 'Password confirmation', class: 'form-label required'
+        = f.password_field :password_confirmation, class: 'form-text-field'
+      .form-action
+        = f.submit 'Submit', class: 'btn btn-primary'
+
+  p
+  = link_to 'delete merchant', @merchant,
+                      data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' },
+                      class: "btn btn-danger"
