@@ -43,7 +43,7 @@ module TransactionManager
   end
 
   def must_have_parent?(transaction)
-    TRANSACTIONS_DEPENDENCIES.keys.include?(transaction.type)
+    TRANSACTIONS_DEPENDENCIES.key?(transaction.type)
   end
 
   def can_be_referenced?(transaction)

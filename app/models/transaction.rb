@@ -13,7 +13,9 @@ class Transaction < ApplicationRecord
   validates :parent_id, presence: true, allow_nil: true
   validates :status, presence: true, inclusion: { in: statuses.keys }, allow_nil: true
   validates :customer_email, presence: true, format: { with: User::EMAIL_FORMAT }
-  validates :customer_phone, numericality: true, length: { minimum: 10, maximum: 15 }
+  validates :customer_phone, numericality: true,
+                             length: { minimum: 10, maximum: 15 },
+                             allow_nil: true
 
   def cancel!
     raise NotImplementedError

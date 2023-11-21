@@ -12,7 +12,7 @@ class User < ApplicationRecord
     active: 1
   }
 
-  has_many :transactions
+  has_many :transactions, dependent: :restrict_with_error
 
   validates :status, presence: true, inclusion: { in: statuses.keys }
   validates :email, presence: true, uniqueness: true, format: { with: EMAIL_FORMAT }
