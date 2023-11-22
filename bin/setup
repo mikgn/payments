@@ -44,4 +44,7 @@ FileUtils.chdir APP_ROOT do
 
   puts "\n== Run users:import rake task =="
   system! 'rake users:import'
+
+  puts "\n== Update cron tasks =="
+  system! 'whenever --update-crontab'
 end

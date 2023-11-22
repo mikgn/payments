@@ -2,19 +2,11 @@
 
 require 'csv'
 
-module UsersImporter
-  extend self
+class UsersImportJob < ApplicationJob
+  queue_as :default
 
-  FILE_PATH = "#{Rails.root}/db/data/users.csv".freeze
-
-  def call
-    import_users
-  end
-
-  private
-
-  def import_users
-    CSV.foreach(FILE_PATH, headers: true, header_converters: :symbol).each do |params|
+  def perform(file_path)
+    CSV.foreach(file_path, headers: true, header_converters: :symbol).each do |params|
       User.create!(
         name: params[:name],
         email: params[:email],
@@ -25,6 +17,6 @@ module UsersImporter
       )
     end
 
-    puts "Users have been imported"
+    puts "#{self.class.name}: Users have been imported"
   end
 end
