@@ -1,4 +1,12 @@
 .content-wrapper
+  #flash-messages
+  - if notice
+    p.alert.alert-success
+      = notice
+  - if alert
+    p.alert.alert-danger
+      = alert
+
   h1 Merchants #{link_to 'Transactions', admin_transactions_path, class: "btn btn-primary"}
   table.table
     thead

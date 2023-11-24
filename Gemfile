@@ -78,6 +78,8 @@ group :development, :test do
   # Runtime developer console
   gem 'pry-byebug', '~> 3.10', '>= 3.10.1'
   gem 'factory_bot_rails', '~> 6.2'
+  gem 'capybara', '~> 3.39', '>= 3.39.2'
+  gem 'webdrivers', '~> 5.3', '>= 5.3.1'
 end
 
 group :development do
