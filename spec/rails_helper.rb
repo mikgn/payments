@@ -33,6 +33,9 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 RSpec.configure do |config|
+  # config.expect_with :rspec do |c|
+  #   c.max_formatted_output_length = nil
+  # end
   config.include FactoryBot::Syntax::Methods
   config.include AuthenticationHelpers
   config.include Rails.application.routes.url_helpers

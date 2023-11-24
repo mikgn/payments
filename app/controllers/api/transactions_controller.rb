@@ -77,7 +77,7 @@ module Api
     end
 
     def fetch_xml_params
-      Hash.from_xml(request.raw_post)['transaction'].symbolize_keys.slice(*PERMITTED_PARAMS)
+      Hash.from_xml(request.raw_post)['hash']['transaction'].symbolize_keys.slice(*PERMITTED_PARAMS)
     end
 
     def validate_params

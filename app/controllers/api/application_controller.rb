@@ -10,7 +10,14 @@ module Api
     ].freeze
 
     def not_found
-      render json: { error: 'not found' }, status: :not_found
+      respond_to do |format|
+        format.json do
+          render json: { error: 'not found' }, status: :not_found
+        end
+        format.xml do
+          render xml: { error: 'Transaction not found' }, status: :not_found
+        end
+      end
     end
 
     def authorize_request
