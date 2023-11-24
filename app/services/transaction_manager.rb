@@ -35,7 +35,7 @@ module TransactionManager
       if can_be_referenced?(parent_transaction)
         parent_transaction.cancel! unless new_transaction.is_a?(Charge)
       else
-        invalid_transaction!(new_transaction)
+        invalidate_transaction!(new_transaction)
       end
 
       new_transaction.save!
@@ -54,8 +54,7 @@ module TransactionManager
     TRANSACTIONS_DEPENDENCIES[transaction.type].constantize.find(transaction.parent_id)
   end
 
-  def invalid_transaction!(transaction)
+  def invalidate_transaction!(transaction)
     transaction.status = :error
-    transaction.parent_id = nil
   end
 end
