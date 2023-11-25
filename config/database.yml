@@ -1,43 +1,22 @@
+
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: <%= ENV['DB_USERNAME'] %>
-  password: <%= ENV["DB_PASSWORD"] %>
-  port: <%= ENV['DB_PORT'] %>
-  host: <%= ENV['DB_HOST'] %>
-  database: <%= ENV['DB_NAME'] %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV['POSTGRES_USER'] { 'postgres'} %>
+  password: <%= ENV['POSTGRES_PASSWORD'] { 'password' } %>
+  port: <%= ENV.fetch('POSTGRES_PORT') { '5432' } %>
+  host: <%= ENV.fetch('POSTGRES_HOST') { 'localhost' } %>
+  database: <%= ENV['POSTGRES_DB'] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { '5' } %>
 
 development:
   <<: *default
 
 test:
   <<: *default
-  database: payments_test
-  # database: <%= ENV['TEST_DB_NAME'] %>
+  database: <%= ENV['POSTGRES_DB_TEST'] %>
 
 production:
   <<: *default
   database: payments_production
 
-
-###########
-
-# default: &default
-  # adapter: postgresql
-  # encoding: unicode
-  # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-# development:
-#   <<: *default
-#   database: payments_development
-
-# test:
-#   <<: *default
-#   database: payments_test
-
-# production:
-#   <<: *default
-#   database: payments_production
-#   username: payments
-#   password: <%= ENV["PAYMENTS_DATABASE_PASSWORD"] %>

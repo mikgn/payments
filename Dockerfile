@@ -1,93 +1,79 @@
-FROM ruby:3.1.2-slim
+FROM ruby:3.2.2-slim-bookworm AS assets
 
-RUN apt-get update -qq && apt-get install --no-install-recommends -y \
-      build-essential libpq-dev libxslt-dev curl cron npm && \
-      apt-get clean && \
-      rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+WORKDIR /app
 
-RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
-      /tmp/node-build-master/bin/node-build 20.9.0 /usr/local/node
+ARG UID=1000
+ARG GID=1000
 
-# RUN rm -rf /tmp/node-build-master
+RUN bash -c "set -o pipefail && apt-get update \
+  && apt-get install -y --no-install-recommends build-essential curl git libpq-dev \
+  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key -o /etc/apt/keyrings/nodesource.asc \
+  && echo 'deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_20.x nodistro main' | tee /etc/apt/sources.list.d/nodesource.list \
+  && apt-get update && apt-get install -y --no-install-recommends nodejs \
+  && corepack enable \
+  && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man \
+  && apt-get clean \
+  && groupadd -g \"${GID}\" ruby \
+  && useradd --create-home --no-log-init -u \"${UID}\" -g \"${GID}\" ruby \
+  && mkdir /node_modules && chown ruby:ruby -R /node_modules /app"
 
-ENV APP_HOME /app
+USER ruby
 
-RUN echo "gem: --no-rdoc --no-ri" > /etc/gemrc
+COPY --chown=ruby:ruby Gemfile* ./
+RUN bundle install
 
-WORKDIR $APP_HOME
+COPY --chown=ruby:ruby package.json *yarn* ./
+RUN yarn install
 
-COPY Gemfile Gemfile.lock ./
-COPY package.json yarn.lock ./
+ARG RAILS_ENV="development"
+ARG NODE_ENV="development"
+ENV RAILS_ENV="${RAILS_ENV}" \
+    NODE_ENV="${NODE_ENV}" \
+    PATH="${PATH}:/home/ruby/.local/bin:/node_modules/.bin" \
+    USER="ruby"
 
-RUN bundle check || bundle install --jobs 20 --retry 5
+COPY --chown=ruby:ruby . .
 
-RUN npm install
+RUN if [ "${RAILS_ENV}" != "development" ]; then \
+  SECRET_KEY_BASE_DUMMY=1 rails assets:precompile; fi
 
-COPY . .
+CMD ["bash"]
 
-RUN chmod +x ./entrypoint.sh
+###############################################################################
 
-ENTRYPOINT ["./entrypoint.sh"]
+FROM ruby:3.2.2-slim-bookworm AS app
 
-# CMD ["rails", "s", "-p", "3000", "-b", "0.0.0.0"]
-CMD ["bin/dev"]
+WORKDIR /app
 
-############################################
+ARG UID=1000
+ARG GID=1000
 
-# FROM ruby:3.1.2-alpine3.15
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends build-essential curl libpq-dev \
+  && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man \
+  && apt-get clean \
+  && groupadd -g "${GID}" ruby \
+  && useradd --create-home --no-log-init -u "${UID}" -g "${GID}" ruby \
+  && chown ruby:ruby -R /app
 
-# ENV BUNDLER_VERSION=2.4.10
+USER ruby
 
-# RUN apk add --update --no-cache \
-#       binutils-gold \
-#       build-base \
-#       curl py-pip \
-#       curl \
-#       file \
-#       g++ \
-#       gcc \
-#       git \
-#       less \
-#       libstdc++ \
-#       libffi-dev \
-#       libc-dev \
-#       linux-headers \
-#       libxml2-dev \
-#       libxslt-dev \
-#       libgcrypt-dev \
-#       make \
-#       netcat-openbsd \
-#       nodejs \
-#       openssl \
-#       pkgconfig \
-#       postgresql-contrib \
-#       libpq-dev \
-#       python3 \
-#       tzdata \
-#       yarn
+COPY --chown=ruby:ruby bin/ ./bin
+RUN chmod 0755 bin/*
 
-# RUN gem install bundler -v $BUNDLER_VERSION
+ARG RAILS_ENV="development"
+ENV RAILS_ENV="${RAILS_ENV}" \
+    PATH="${PATH}:/home/ruby/.local/bin" \
+    USER="ruby"
 
-# RUN gem install nokogiri --platform=ruby
+COPY --chown=ruby:ruby --from=assets /usr/local/bundle /usr/local/bundle
+COPY --chown=ruby:ruby --from=assets /app/public /public
+COPY --chown=ruby:ruby . .
 
-# WORKDIR /app
+RUN chmod +x /app/bin/docker-entrypoint-web
 
-# COPY Gemfile Gemfile.lock ./
+ENTRYPOINT ["/app/bin/docker-entrypoint-web"]
 
-# # RUN bundle config build.nokogiri --use-system-libraries
+EXPOSE 3000
 
-# RUN bundle lock --add-platform x86_64-linux
-
-# # RUN bundle check || bundle install
-
-# COPY package.json yarn.lock ./
-
-# RUN yarn install --check-files
-
-# COPY . ./
-
-# RUN ["chmod", "+x", "entrypoint.sh"]
-
-# EXPOSE 3000
-
-# ENTRYPOINT ["sh", "entrypoint.sh"]
+CMD ["rails", "server", "-b", "0.0.0.0"]

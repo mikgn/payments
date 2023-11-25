@@ -19,8 +19,8 @@ FileUtils.chdir APP_ROOT do
   system! 'gem install bundler --conservative'
   system('bundle check') || system!('bundle install')
 
-  puts '== Install JavaScript dependencies =='
-  system! 'yarn'
+  # puts '== Install JavaScript dependencies =='
+  # system! 'yarn'
 
   # puts "\n== Copying sample files =="
   # unless File.exist?("config/database.yml")
