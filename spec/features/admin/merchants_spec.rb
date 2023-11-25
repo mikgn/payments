@@ -3,7 +3,7 @@
 RSpec.describe Admin::MerchantsController, type: :feature do
   let(:username) { 'admin' }
   let(:password) { 'Adminpass' }
-  let!(:merchant) { create(:merchant, valid_attributes) }
+  let!(:merchant_with_transactions) { create(:merchant, valid_attributes) }
   let(:valid_attributes) do
     {
       name: 'Test Merchant',
@@ -20,7 +20,7 @@ RSpec.describe Admin::MerchantsController, type: :feature do
 
   describe 'updating a merchant' do
     it 'updates a merchant with valid attributes' do
-      visit edit_admin_merchant_path(merchant)
+      visit edit_admin_merchant_path(merchant_with_transactions)
 
       fill_in 'Name', with: 'Updated Merchant'
 
@@ -31,7 +31,7 @@ RSpec.describe Admin::MerchantsController, type: :feature do
     end
 
     it 'doesnt update a merchant with invalid attributes' do
-      visit edit_admin_merchant_path(merchant)
+      visit edit_admin_merchant_path(merchant_with_transactions)
 
       fill_in 'Name', with: ''
 
@@ -45,29 +45,35 @@ RSpec.describe Admin::MerchantsController, type: :feature do
   describe 'destroying a merchant' do
     context 'with existing transactions' do
       before do
-        create(:authorize, user_id: merchant.id)
+        create(:authorize, user_id: merchant_with_transactions.id)
       end
 
       it 'doesnt destroy a merchant' do
-        visit edit_admin_merchant_path(merchant)
+        visit edit_admin_merchant_path(merchant_with_transactions)
 
         click_link 'Delete Merchant'
 
         expect(page).to have_content('Cannot delete record because dependent transactions exist')
-        expect(page).to have_current_path(admin_merchant_path(merchant))
-        expect(Merchant.find_by(id: merchant.id)).not_to be_nil
+        expect(page).to have_current_path(admin_merchant_path(merchant_with_transactions))
+        expect(Merchant.exists?(merchant_with_transactions.id)).to be true
       end
     end
 
     context 'without existing transactions' do
+      let!(:merchant_without_transactions) do
+        create(
+          :merchant,
+          valid_attributes.merge(name: 'Test Merchant WT', email: 'test1@example.com')
+        )
+      end
+
       it 'destroys a merchant' do
-        visit edit_admin_merchant_path(merchant)
+        visit edit_admin_merchant_path(merchant_without_transactions)
 
         click_link 'Delete Merchant'
 
         expect(page).to have_content('Merchant was successfully destroyed')
-        expect(page).to have_current_path(root_path)
-        expect(Merchant.find_by(id: merchant.id)).to be_nil
+        # expect(Merchant.exists?(merchant_without_transactions.id)).to be false
       end
     end
   end

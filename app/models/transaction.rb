@@ -22,6 +22,6 @@ class Transaction < ApplicationRecord
   end
 
   def serializable_hash(options = nil)
-    super.merge(trsnsaction_type: type)
+    super.merge(type: type)
   end
 end

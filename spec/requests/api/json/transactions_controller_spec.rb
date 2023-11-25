@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Api::TransactionsController, type: :controller do
-  let(:merchant) { create(:merchant) }
+  let(:merchant) { create(:merchant, email: 'mr@example.com') }
   let(:transactions) { [create(:authorize, user_id: merchant.id)] }
 
   before do
@@ -55,8 +55,9 @@ RSpec.describe Api::TransactionsController, type: :controller do
         post :create, params: { transaction: authorize_params }, format: :json
 
         expect(response.status).to eq(201)
-        expect(Authorize.last.slice(:type, :amount, :customer_email, :customer_phone))
-          .to eq(authorize_params)
+        expect(
+          JSON.parse(response.body).slice('type', 'amount', 'customer_email', 'customer_phone')
+        ).to eq(authorize_params)
       end
 
       it 'doesnt create authorize transaction with invalid params' do
@@ -85,8 +86,11 @@ RSpec.describe Api::TransactionsController, type: :controller do
         post :create, params: { transaction: charge_params }, format: :json
 
         expect(response.status).to eq(201)
-        expect(Charge.last.slice(:type, :amount, :customer_email, :customer_phone, :parent_id))
-          .to eq(charge_params)
+        expect(
+          JSON.parse(response.body).slice(
+            'type', 'amount', 'customer_email', 'customer_phone', 'parent_id'
+          )
+        ).to eq(charge_params)
       end
 
       it 'doesnt create charge transaction with invalid params' do
@@ -115,9 +119,16 @@ RSpec.describe Api::TransactionsController, type: :controller do
         post :create, params: { transaction: refund_params }, format: :json
 
         expect(response.status).to eq(201)
-        expect(Refund.last.slice(:type, :amount, :customer_email, :customer_phone, :parent_id))
-          .to eq(refund_params)
-        expect(Charge.last.status)
+        expect(
+          JSON.parse(response.body).slice(
+            'type', 'amount', 'customer_email', 'customer_phone', 'parent_id'
+          )
+        ).to eq(refund_params)
+
+        expect(JSON.parse(response.body).slice(
+                 'type', 'amount', 'customer_email', 'customer_phone', 'parent_id'
+               )).to eq(refund_params)
+        expect(Charge.find_by(id: refund_params['parent_id']).status)
           .to eq('refunded')
       end
 
@@ -147,9 +158,10 @@ RSpec.describe Api::TransactionsController, type: :controller do
         post :create, params: { transaction: reversal_params }, format: :json
 
         expect(response.status).to eq(201)
-        expect(Reversal.last.slice(:type, :customer_email, :customer_phone, :parent_id))
-          .to eq(reversal_params)
-        expect(Authorize.last.status)
+        expect(JSON.parse(response.body).slice(
+                 'type', 'customer_email', 'customer_phone', 'parent_id'
+               )).to eq(reversal_params)
+        expect(Authorize.find_by(id: reversal_params['parent_id']).status)
           .to eq('reversed')
       end
 
