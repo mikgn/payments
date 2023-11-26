@@ -31,7 +31,16 @@ module Api
     end
 
     def check_merchant_status
-      render json: { error: 'inactive user' }, status: :unauthorized unless @current_user.active?
+      unless @current_user.active?
+        respond_to do |format|
+          format.json do
+            render json: { error: 'inactive user' }, status: :not_found
+          end
+          format.xml do
+            render xml: { error: 'inactive user' }, status: :not_found
+          end
+        end
+      end
     end
   end
 end
