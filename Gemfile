@@ -9,7 +9,7 @@ ruby '3.2.2'
 gem 'rails', '~> 7.0.3'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem 'sprockets-rails'
+gem 'sprockets-rails', '~> 3.4', '>= 3.4.2'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
@@ -18,19 +18,10 @@ gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.0'
 
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem 'jsbundling-rails'
-
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem 'turbo-rails'
-
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem 'stimulus-rails'
+gem 'jsbundling-rails', '~> 1.2', '>= 1.2.1'
 
 # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
 gem 'cssbundling-rails'
-
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-# gem 'jbuilder'
 
 # Static code analyzer
 gem 'rubocop', '~> 1.57', require: false
@@ -43,9 +34,6 @@ gem "bcrypt", "~> 3.1.7"
 
 # Slim
 gem "slim-rails"
-
-# Sass
-gem 'sass-rails'
 
 # Background processing
 gem 'sidekiq', '~> 7.2'

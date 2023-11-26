@@ -41,4 +41,10 @@ FileUtils.chdir APP_ROOT do
 
   puts "\n== Run RSpec tests =="
   system! 'rspec'
+
+  puts "\n== Run Rubocop =="
+  system! 'rubocop'
+
+  puts "\n== Update Cron Tasks =="
+  system! 'whenever --update-crontab --set environment="development"'
 end

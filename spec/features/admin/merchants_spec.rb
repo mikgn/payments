@@ -51,7 +51,7 @@ RSpec.describe Admin::MerchantsController, type: :feature do
       it 'doesnt destroy a merchant' do
         visit edit_admin_merchant_path(merchant_with_transactions)
 
-        click_link 'Delete Merchant'
+        click_button 'Delete Merchant'
 
         expect(page).to have_content('Cannot delete record because dependent transactions exist')
         expect(page).to have_current_path(admin_merchant_path(merchant_with_transactions))
@@ -70,10 +70,10 @@ RSpec.describe Admin::MerchantsController, type: :feature do
       it 'destroys a merchant' do
         visit edit_admin_merchant_path(merchant_without_transactions)
 
-        click_link 'Delete Merchant'
+        click_button 'Delete Merchant'
 
         expect(page).to have_content('Merchant was successfully destroyed')
-        # expect(Merchant.exists?(merchant_without_transactions.id)).to be false
+        expect(Merchant.exists?(merchant_without_transactions.id)).to be false
       end
     end
   end
