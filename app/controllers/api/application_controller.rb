@@ -31,14 +31,14 @@ module Api
     end
 
     def check_merchant_status
-      unless @current_user.active?
-        respond_to do |format|
-          format.json do
-            render json: { error: 'inactive user' }, status: :not_found
-          end
-          format.xml do
-            render xml: { error: 'inactive user' }, status: :not_found
-          end
+      return if @current_user.active?
+
+      respond_to do |format|
+        format.json do
+          render json: { error: 'inactive user' }, status: :not_found
+        end
+        format.xml do
+          render xml: { error: 'inactive user' }, status: :not_found
         end
       end
     end

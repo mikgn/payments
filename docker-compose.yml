@@ -1,109 +1,38 @@
-x-app: &default-app
-  build:
-    context: "."
-    target: "app"
-    args:
-      - "UID=${UID:-1000}"
-      - "GID=${GID:-1000}"
-      - "RAILS_ENV=${RAILS_ENV:-production}"
-      - "NODE_ENV=${NODE_ENV:-production}"
-  depends_on:
-    postgres:
-      condition: "service_started"
-      required: false
-    redis:
-      condition: "service_started"
-      required: false
-  env_file:
-    - ".env"
-  restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
-  stop_grace_period: "3s"
-  tty: true
-  volumes:
-    - .:/app
-
-x-assets: &default-assets
-  build:
-    context: "."
-    target: "assets"
-    args:
-      - "UID=${UID:-1000}"
-      - "GID=${GID:-1000}"
-      - "RAILS_ENV=${RAILS_ENV:-production}"
-      - "NODE_ENV=${NODE_ENV:-production}"
-  env_file:
-    - ".env"
-  profiles: ["assets"]
-  restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
-  stop_grace_period: "3s"
-  tty: true
-  volumes:
-    - ".:/app"
-
+version: '3'
 services:
-  postgres:
-    deploy:
-      resources:
-        limits:
-          cpus: "${DOCKER_POSTGRES_CPUS:-0}"
-          memory: "${DOCKER_POSTGRES_MEMORY:-0}"
-    environment:
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-    image: "postgres:14.9-bookworm"
-    profiles: ["postgres"]
-    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
-    stop_grace_period: "3s"
-    volumes:
-      - "postgres:/var/lib/postgresql/data"
-
-  redis:
-    deploy:
-      resources:
-        limits:
-          cpus: "${DOCKER_REDIS_CPUS:-0}"
-          memory: "${DOCKER_REDIS_MEMORY:-0}"
-    image: "redis:7.2.3-bookworm"
-    profiles: ["redis"]
-    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
-    stop_grace_period: "3s"
-    volumes:
-      - "redis:/data"
-
   web:
-    <<: *default-app
-    deploy:
-      resources:
-        limits:
-          cpus: "${DOCKER_WEB_CPUS:-0}"
-          memory: "${DOCKER_WEB_MEMORY:-0}"
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && rails s -b '0.0.0.0'"
+    volumes:
+      - .:/app
     ports:
-      - '3000:3000'
-    profiles: ["web"]
+      - "3000:3000"
+    env_file:
+      - ".env"
     depends_on:
-      - postgres
-
-  worker:
-    <<: *default-app
-    command: "bundle exec sidekiq -C config/sidekiq.yml"
-    entrypoint: []
-    deploy:
-      resources:
-        limits:
-          cpus: "${DOCKER_WORKER_CPUS:-0}"
-          memory: "${DOCKER_WORKER_MEMORY:-0}"
-    profiles: ["worker"]
-    depends_on:
+      - db
       - redis
-
-  js:
-    <<: *default-assets
-    command: "yarn build"
-
-  css:
-    <<: *default-assets
-    command: "yarn build:css"
+      - sidekiq
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: "${POSTGRES_USER}"
+      # POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    env_file:
+      - ".env"
+    volumes:
+      - "${LOCAL_POSTGRES_DATA_DIR}:/var/lib/postgresql/data"
+  redis:
+    image: "redis:alpine"
 
 volumes:
-  postgres: {}
-  redis: {}
+  postgres_data:
