@@ -78,6 +78,8 @@ module Api
 
     def fetch_xml_params
       Hash.from_xml(request.raw_post)['hash']['transaction'].symbolize_keys.slice(*PERMITTED_PARAMS)
+    rescue StandardError => _e
+      {}
     end
 
     def validate_params
