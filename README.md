@@ -1,4 +1,4 @@
-## payments
+## Payments
 
 
 - clone repository
@@ -21,7 +21,7 @@
 
     `bin/docker_setup`
 
- ### admin
+ ### Admin
 
 > sample credentials
 >
