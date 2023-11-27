@@ -37,8 +37,8 @@ Lint/SuppressedException:
 Metrics/AbcSize:
   Enabled: false
 
-GlobalVars:
-  AllowedVariables:
+# GlobalVars:
+#   AllowedVariables:
 
 Metrics/BlockLength:
   Exclude:
