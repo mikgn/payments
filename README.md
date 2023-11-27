@@ -1,4 +1,4 @@
-## payments
+## Payments
 
 
 - clone repository
@@ -17,11 +17,11 @@
 
     `docker ps`
 
-    `docker compose -it <container_id> bash`
+    `docker exec -it <container_id> bash`
 
     `bin/docker_setup`
 
- ### admin
+ ### Admin
 
 > sample credentials
 >
