@@ -32,11 +32,12 @@ services:
     env_file:
       - ".env"
     volumes:
-      - "${LOCAL_POSTGRES_DATA_DIR}:/var/lib/postgresql/data"
+      - ./postgres-data:/var/lib/postgresql/data
   redis:
     image: "redis:alpine"
     volumes:
-      - "${LOCAL_REDIS_DATA_DIR}:/var/lib/redis/data"
+      - ./redis_data:/var/lib/redis/data
 
 volumes:
   postgres_data:
+  redis_data:
