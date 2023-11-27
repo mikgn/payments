@@ -1,3 +1,86 @@
+## payments
+
+
+- clone repository
+
+    `git clone git@github.com:mikgn/payments.git`
+
+- enter app dir
+
+    `cd payments`
+
+ - build services with docker compose
+
+    `docker compose up --build`
+
+ - enter web container and run setup script
+
+    `docker ps`
+
+    `docker compose -it <container_id> bash`
+
+    `bin/docker_setup`
+
+ ### admin
+
+> sample credentials
+>
+> username: admin
+>
+> password: Adminpass
+
+  `localhost:3000`
+
+### API
+
+> #### Json
+GET transactions
+
+`GET localhost:3000/transactions`
+
+GET transaction
+
+`GET localhost:3000/transactions/:id`
+
+Get JWT
+
+    POST localhost:3000/auth/login
+
+    {
+      "merchant": {
+        "email": "test_merchant1@example.com",
+        "password": "Testpass1"
+      }
+    }
+Create transaction
+
+    POST localhost:3000/transactions
+
+    {
+      "transaction": {
+        "type": "Authorize",
+        "amount": 100,
+        "customer_email": "qwerty@qwerty.com",
+        "customer_phone": "1234567890"
+      }
+    }
+
+> #### XML
+
+    POST localhost:3000/transactions
+
+    <?xml version="1.0" encoding="UTF-8" ?>
+     <hash>
+       <transaction>
+         <type>Authorize</type>
+         <amount>100</amount>
+         <customer_email>qwerty@qwerty.com</customer_email>
+         <customer_phone>1234567890</customer_phone>
+       </transaction>
+     </hash>
+
+<br/>
+
 **Technical** **requirements**
 
  1\. Use the latest stable Rails version 2. Use Slim view engine
