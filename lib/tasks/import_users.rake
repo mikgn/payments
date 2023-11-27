@@ -2,6 +2,7 @@
 
 namespace :users do
   desc 'Import Users'
+
   task import: :environment do
     file_path = "#{Rails.root}/db/data/users.csv"
 
