@@ -1,5 +1,7 @@
-## Payments
+## Payment System Technical Assessment
+[**Description**](#technical-requirements)
 
+### Getting Started
 
 - clone repository
 
@@ -81,9 +83,11 @@ Create transaction
 
 <br/>
 
-**Technical** **requirements**
+## **Technical** **Requirements**
 
- 1\. Use the latest stable Rails version 2. Use Slim view engine
+ 1\. Use the latest stable Rails version
+
+ 2\. Use Slim view engine
 
  3\. Frontend Framework
 
