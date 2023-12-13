@@ -6,8 +6,8 @@ RSpec.describe Api::AuthenticationController, type: :controller do
   let(:auth_params) do
     {
       merchant: {
-        email: 'merchant@example.com',
-        password: 'Merchantpass1'
+        email: merchant.email,
+        password: merchant.password
       }
     }
   end

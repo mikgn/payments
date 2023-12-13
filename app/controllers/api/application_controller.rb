@@ -21,7 +21,7 @@ module Api
     end
 
     def authorize_request
-      header = request.headers['Authorization']&.split(' ')&.last
+      header = request.headers['Authorization']&.split&.last
 
       decoded = JsonWebToken.decode(header)
 

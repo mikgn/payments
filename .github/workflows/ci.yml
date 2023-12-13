@@ -1,0 +1,67 @@
+env:
+  RUBY_VERSION: 3.2
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: postgres
+  BASIC_AUTHENTICATION_USERNAME: admin
+  BASIC_AUTHENTICATION_PASSWORD: Adminpass
+
+name: Pull Request Checks
+on:
+  pull_request:
+
+jobs:
+  rubocop-test:
+    name: Rubocop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Install Rubocop
+        run: gem install rubocop
+      - name: Check code
+        run: rubocop
+
+  rspec-test:
+    name: RSpec
+    needs: rubocop-test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          BASIC_AUTHENTICATION_USERNAME: ${{ env.BASIC_AUTHENTICATION_USERNAME }}
+          BASIC_AUTHENTICATION_PASSWORD: ${{ env.BASIC_AUTHENTICATION_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+
+      - name: Install postgres client
+        run: sudo apt-get install libpq-dev
+
+      - name: Install dependencies
+        run: |
+          gem install bundler -v 2.4.10
+          bundle install
+
+      - name: Compile assets
+        run: bundle exec rake assets:precompile
+
+      - name: Create database
+        run: rails db:test:prepare
+
+      - name: Set RAILS_ENV
+        run: export RAILS_ENV=test
+
+      - name: Run tests
+        run: bundle exec rspec
