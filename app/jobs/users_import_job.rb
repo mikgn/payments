@@ -5,7 +5,7 @@ require 'csv'
 class UsersImportJob < ApplicationJob
   queue_as :default
 
-  sidekiq_options retry: 1
+  sidekiq_options retry: false
 
   def perform(file_path)
     CSV.foreach(file_path, headers: true, header_converters: :symbol).each do |params|

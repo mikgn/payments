@@ -25,7 +25,11 @@ RUN echo "deb http://deb.debian.org/debian/ bullseye main" > /etc/apt/sources.li
 
 COPY . /app/
 
+RUN chmod +x entrypoint.sh
+
 RUN bundle install
+
+ENTRYPOINT ["./entrypoint.sh"]
 
 EXPOSE 3000
 
