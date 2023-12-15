@@ -13,15 +13,7 @@
 
  - build services with docker compose
 
-    `docker compose up --build`
-
- - enter web container and run setup script
-
-    `docker ps`
-
-    `docker exec -it <container_id> bash`
-
-    `bin/docker_setup`
+    `docker compose up -d --build`
 
  ### Admin
 
