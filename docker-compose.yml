@@ -2,7 +2,6 @@ version: '3'
 services:
   web:
     build: .
-    # command: bash -c "rm -f tmp/pids/server.pid && rails s -b '0.0.0.0'"
     # volumes:
     #   - .:/app
     ports:
@@ -11,11 +10,8 @@ services:
       - ".env"
     depends_on:
       - db
-        # condition: service_healthy
       - redis
-        # condition: service_started
       - sidekiq
-        # condition: service_started
   sidekiq:
     build: .
     env_file:
@@ -36,10 +32,6 @@ services:
       - ".env"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-          test: "pg_isready --username=postgres && psql --username=postgres --list"
-          timeout: 10s
-          retries: 20
   redis:
     image: "redis:alpine"
     volumes:
